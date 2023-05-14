@@ -20,6 +20,11 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
+
+                @inject('cart', 'App\Services\Cart\Cart')
+
+                <a href="{{ route('cart.index') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Cart ({{ $cart->itemCount() }})</a>
+
                 @auth
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
@@ -51,9 +56,10 @@
                     </x-slot>
                 </x-dropdown>
                 @else
-                <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+                <a href="{{ route('login') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Login</a>
                 <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
                 @endauth
+
             </div>
 
             <!-- Hamburger -->
@@ -103,11 +109,14 @@
             </div>
             @else
             <div class="mt-3 space-y-1">
-            <x-responsive-nav-link :href="route('login')">
+                <x-responsive-nav-link :href="route('login')">
                     {{ __('Log in') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('register')">
                     {{ __('Register') }}
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('cart.index')">
+                    {{ __('Cart ($cart->itemCount())') }}
                 </x-responsive-nav-link>
             </div>
             @endauth

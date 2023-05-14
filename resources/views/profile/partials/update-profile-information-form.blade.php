@@ -54,6 +54,12 @@
             <x-input-error class="mt-2" :messages="$errors->get('phone_number')" />
         </div>
 
+        <div>
+            <x-input-label for="card_number" :value="__('Card Number')" />
+            <x-text-input id="card_number" name="card_number" type="text" class="mt-1 block w-full" :value="old('card_number', $user->card_number)" autocomplete="card_number" />
+            <x-input-error class="mt-2" :messages="$errors->get('card_number')" />
+        </div>
+
     
 
         <div class="flex items-center gap-4">

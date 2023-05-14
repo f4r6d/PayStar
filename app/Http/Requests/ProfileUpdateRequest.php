@@ -15,10 +15,18 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $this->request->replace([
+            'card_number' => str_replace(['-', ',', '.', ' ', '_'], '', $this->request->get('card_number'))
+        ]);
+        
         return [
             'name' => ['string', 'max:255'],
             'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
             'phone_number' => ['nullable', 'digits:11'],
+            'card_number' => ['nullable', 'digits:16'],
         ];
     }
+
+
+
 }

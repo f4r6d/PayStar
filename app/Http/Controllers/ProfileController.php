@@ -37,6 +37,23 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
     }
 
+    public function updateCardNumber(Request $request)
+    {
+        $request->replace([
+            'card_number' => str_replace(['-', ',', '.', ' ', '_'], '', $request->get('card_number'))
+        ]);
+
+        $request->validate([
+            'card_number' => ['nullable', 'digits:16'],
+        ]);
+
+
+        $request->user()->update($request->input());
+
+
+        return back()->with('success', 'Card number updated.');
+    }
+
     /**
      * Delete the user's account.
      */

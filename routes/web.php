@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Services\Cart\Contracts\CartInterface;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,9 +17,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::redirect('/', 'products')->name('home');
+// Route::get('/', function(){
+
+//     $c = app(CartInterface::class);
+//     $c->put('a', 5);
+//     $c->put('b', 4);
+
+//     dd(session()->all());
+
+// });
+
+Route::resource('/products', ProductController::class)->only(['index']);
+
+Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
+Route::get('cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -26,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/update_card_number', [ProfileController::class, 'updateCardNumber'])->name('profile.update-card-number');
 });
 
 require __DIR__.'/auth.php';

@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
-use App\Services\Cart\Contracts\CartInterface;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 
 Route::redirect('/', 'products')->name('home');
 // Route::get('/', function(){
@@ -35,6 +36,7 @@ Route::get('cart/checkout', [CartController::class, 'checkoutForm'])->name('cart
 Route::post('cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::post('payment/callback', [PaymentController::class, 'verify'])->name('payment.verify');
 
 
 

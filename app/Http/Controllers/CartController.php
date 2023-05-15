@@ -19,7 +19,7 @@ class CartController extends Controller
         $this->cart->add($product, 1);
 
         return back()->with([
-            'success' => 'added to your cart',
+            'msg' => 'added to your cart',
             'item' => $product->name,
         ]);
     }
@@ -39,7 +39,7 @@ class CartController extends Controller
     public function checkoutForm()
     {
         if (!$this->cart->itemCount()) {
-            return to_route('products.index')->with('success', 'Please first add items to your cart..');
+            return to_route('products.index')->with('msg', 'Please first add items to your cart..');
         }
 
         return view('cart.checkout');
@@ -48,12 +48,11 @@ class CartController extends Controller
     public function checkout()
     {
         try {
-            $order = $this->transaction->checkout();
+            $this->transaction->checkout();
         } catch (OrderException $e) {
             
-            return back()->with('success', $e->getMessage());
+            return back()->with('msg', $e->getMessage());
         }
 
-        return to_route('dashboard')->with('success', "order {$order->id} has been done");
     }
 }

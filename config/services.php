@@ -31,4 +31,12 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'paystar' => [
+        'gatewayId' => env('PAYSTAR_GATEWAY_ID'),
+        'secretKey' => env('PAYSTAR_SECRET_KEY'),
+        'callback' => env('PAYSTAR_CALLBACK'),
+        'baseURI' => env('PAYSTAR_BASE_URI'),
+    ],
+
+
 ];

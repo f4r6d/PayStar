@@ -15,9 +15,10 @@ class ProfileUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $this->request->replace([
+        $this->request->add([
             'card_number' => str_replace(['-', ',', '.', ' ', '_'], '', $this->request->get('card_number'))
         ]);
+
         
         return [
             'name' => ['string', 'max:255'],

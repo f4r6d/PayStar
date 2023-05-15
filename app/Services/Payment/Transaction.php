@@ -6,11 +6,13 @@ use App\Exceptions\OrderException;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Services\Cart\Cart;
+use App\Services\Payment\Gateway\PayStar;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class Transaction
 {
-    public function __construct(private Cart $cart)
+    public function __construct(private Request $request, private Cart $cart, private PayStar $gateway)
     {
     }
 
@@ -28,9 +30,21 @@ class Transaction
 
         $payment = $this->makePayment($order);
 
-        $this->cart->clear();
+        return $this->gateway->pay($payment);
 
-        return $order;
+    }
+
+
+    public function verify()
+    {
+        $result = $this->gateway->verify($this->request);
+        
+        if ($result->status == 1) {
+
+            $this->cart->clear();
+            return true;
+        }
+
     }
 
     private function makeOrder()
@@ -41,18 +55,18 @@ class Transaction
             'amount' => $this->cart->subTotal(),
         ]);
 
-        $order->products()->attach($this->products());
+        $order->products()->attach($this->orderProducts());
 
         return $order;
     }
 
-    private function products()
+    private function orderProducts()
     {
         foreach ($this->cart->all() as $item) {
-            $products[$item->id] = ['quantity' => $item->quantity];
+            $orderProducts[$item->id] = ['quantity' => $item->quantity];
         }
 
-        return $products ?? [];
+        return $orderProducts ?? [];
     }
 
     private function makePayment(Order $order)
@@ -63,4 +77,5 @@ class Transaction
             'card_number' => auth()->user()->card_number,
         ]);
     }
+
 }

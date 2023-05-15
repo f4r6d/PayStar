@@ -25,7 +25,7 @@ class Order extends Model
 
     public function products() :BelongsToMany
     {
-        return $this->belongsToMany(Product::class)->withPivot('quantity');
+        return $this->belongsToMany(Product::class)->withPivot('quantity')->as('detail');
     }
 
     public function payment() : HasOne

@@ -23,10 +23,10 @@
                                         <form method="post" action="{{ route('profile.update-card-number') }}" class="w-full max-w-sm">
                                             @csrf
                                             @method('patch')
-                                            <label class="font-bold" for="card_number">Card Number</label>
-                                            <div id="card_number" class="flex items-center border-b border-teal-500 py-2">
-                                                <input type="test" name="card_number" class="appearance-none font-bold dark:text-gray-100  bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" value="{{ preg_replace('~.{4}\K~', '  ', auth()->user()->card_number) }}" aria-label="Card Number">
-                                                <input type="submit" class=" text-teal-500" value="Change">
+                                            <label class="font-bold" for="card_number">Card Number (You must pay with this card number)</label>
+                                            <div id="card_number" class="flex items-center border-b border-teal-500 ">
+                                                <input type="test" name="card_number" class="appearance-none font-bold dark:text-gray-100 w-full py-2  bg-transparent border-none  text-gray-700 leading-tight focus:outline-none" type="text" value="{{ preg_replace('~.{4}\K~', '  ', auth()->user()->card_number) }}" aria-label="Card Number">
+                                                <input type="submit" class=" bg-transparent  text-teal-500 py-2" value="Change">
                                             </div>
                                             <x-input-error class="mt-2" :messages="$errors->get('card_number')" />
                                         </form>

@@ -40,11 +40,6 @@
                                         <h2 class="text-lg font-bold dark:text-gray-200 text-gray-900">Empty</h2>
                                     </div>
                                 </div>
-                                <div class="mt-4 flex justify-between sm:space-y-6 sm:mt-0 sm:block sm:space-x-6">
-                                    <div class="flex items-center border-gray-100">
-                                        <p class="text-lg font-bold dark:text-gray-200 text-gray-900">0</p>
-                                    </div>
-                                </div>
                             </div>
 
                             @endforelse

@@ -78,4 +78,9 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function dashboard()
+    {
+        return view('dashboard', ['orders'=> auth()->user()->orders]);
+    }
 }

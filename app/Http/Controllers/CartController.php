@@ -10,7 +10,7 @@ class CartController extends Controller
 {
     public function __construct(private Cart $cart)
     {
-        $this->middleware('auth')->only('checkout');
+        $this->middleware('auth')->only('checkoutForm', 'checkout');
     }
 
     public function add(Product $product)
@@ -29,14 +29,20 @@ class CartController extends Controller
         return view('cart.cart', ['items'=> $items]);
     }
 
-    public function checkout()
-    {
-        return view('cart.checkout');
-    }
-
     public function clear()
     {
         $this->cart->clear();
         return back();
+    }
+
+    public function checkoutForm()
+    {
+        return view('cart.checkout');
+    }
+
+    public function checkout()
+    {
+        dump(auth()->user()->card_number);
+        return view('cart.checkout');
     }
 }

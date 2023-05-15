@@ -18,15 +18,16 @@
         </div>
     </div>
     @if (request()->is('cart'))
-    <a href="{{ route('cart.checkout') }}">
+    <a href="{{ route('cart.checkout-form') }}">
         <button class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Check out</button>
     </a>
     <a href="{{ route('cart.clear') }}">
         <button class="mt-6 w-full rounded-md bg-red-500 py-1.5 font-medium text-red-50 hover:bg-red-600">Clear Cart</button>
     </a>
     @else
-    <a href="{{ route('cart.checkout') }}">
-        <button class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">Pay</button>
-    </a>
+    <form action="{{ route('cart.checkout') }}" method="post">
+        @csrf
+        <input type="submit" value="Pay" class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">
+    </form>
     @endif
 </div>

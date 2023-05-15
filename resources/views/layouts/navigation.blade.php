@@ -96,6 +96,9 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('cart.index')">
+                    Cart {{ $cart->itemCount() }}
+                </x-responsive-nav-link>
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
@@ -116,7 +119,7 @@
                     {{ __('Register') }}
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('cart.index')">
-                    {{ __('Cart ($cart->itemCount())') }}
+                    Cart {{ $cart->itemCount() }}
                 </x-responsive-nav-link>
             </div>
             @endauth

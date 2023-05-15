@@ -7,7 +7,7 @@
     </x-slot>
     <br>
 
-    <div class="container mx-auto px-4 grid grid-cols-4 gap-4">
+    <div class="container mx-auto px-4 ">
 
         @foreach ($products as $product)
         <div>
@@ -29,15 +29,15 @@
             </div>
 
         </div>
+        <br>
         @endforeach
 
-        
     </div>
     <br>
 
 
-        {{ $products->links() }}
-    
+    {{ $products->links() }}
+
     <br>
-    
+
 </x-app-layout>

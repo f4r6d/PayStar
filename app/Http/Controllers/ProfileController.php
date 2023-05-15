@@ -40,7 +40,11 @@ class ProfileController extends Controller
     public function updateCardNumber(Request $request)
     {
         $request->replace([
-            'card_number' => str_replace(['-', ',', '.', ' ', '_'], '', $request->get('card_number'))
+            'card_number' => str_replace(
+                ['-', ',', '.', ' ', '_'],
+                '',
+                $request->get('card_number')
+            )
         ]);
 
         $request->validate([

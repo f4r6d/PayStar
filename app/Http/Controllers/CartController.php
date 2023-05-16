@@ -14,45 +14,117 @@ class CartController extends Controller
         $this->middleware('auth')->only('checkoutForm', 'checkout');
     }
 
-    public function add(Product $product)
-    {
-        $this->cart->add($product, 1);
-
-        return back()->with([
-            'msg' => 'added to your cart',
-            'item' => $product->name,
-        ]);
-    }
-
     public function index()
     {
         $items = $this->cart->all();
         return view('cart.cart', ['items' => $items]);
     }
 
+    public function add(Product $product)
+    {
+        try {
+            $this->cart->add($product, 1);
+        } catch (OrderException $e) {
+            return back()->with([
+                'msg' => $e->getMessage(),
+                'title' => 'Error',
+            ]);
+        }
+
+        return back()->with([
+            'msg' => 'added to your cart',
+            'title' => $product->name,
+        ]);
+    }
+
+    public function remove(Product $product)
+    {
+        try {
+            $this->cart->remove($product);
+        } catch (OrderException $e) {
+            return back()->with([
+                'msg' => $e->getMessage(),
+                'title' => 'Error',
+            ]);
+        }
+
+        return back()->with([
+            'msg' => 'removed from your cart',
+            'title' => $product->name,
+        ]);
+    }
+
+    public function update(Product $product)
+    {
+        
+        $quantity = request()->quantity;
+        try {
+            $this->cart->update($product, $quantity);
+        } catch (OrderException $e) {
+            return back()->with([
+                'msg' => $e->getMessage(),
+                'title' => 'Error',
+            ]);
+        }
+
+        return back()->with([
+            'msg' => 'quantity updated',
+            'title' => $product->name,
+        ]);
+    }
+
     public function clear()
     {
+        if (!$this->cart->itemCount()) {
+            return back()->with([
+                'msg' => 'Cart is already empty',
+                'title' => 'Warning',
+            ]);
+        }
+
         $this->cart->clear();
-        return back();
+        return back()->with([
+            'msg' => 'Items removed from your cart',
+            'title' => 'Info',
+        ]);
     }
 
     public function checkoutForm()
     {
         if (!$this->cart->itemCount()) {
-            return to_route('products.index')->with('msg', 'Please first add items to your cart..');
+            return to_route('products.index')->with([
+                'msg' => 'Please first add items to your cart..',
+                'title' => 'Error',
+            ]);
         }
 
-        return view('cart.checkout');
+        $items = $this->cart->all();
+
+        return view('cart.checkout', ['items' => $items]);
     }
 
     public function checkout()
     {
         try {
-            $this->transaction->checkout();
+            $result = $this->transaction->checkout();
         } catch (OrderException $e) {
-            
-            return back()->with('msg', $e->getMessage());
+
+            return back()->with([
+                'msg' => $e->getMessage(),
+                'title' => 'Error',
+            ]);
         }
 
+        if ($result['status'] == 1) {
+            return to_route('dashboard')->with([
+                'msg' => "The order {$result['payment']->order->id} was placed..",
+                'title' => 'Success',
+            ]);
+        } else {
+            return back()->with([
+                'msg' => 'Error in payment.....',
+                'title' => 'Error',
+            ]);
+        }
     }
 }

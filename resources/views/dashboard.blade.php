@@ -5,6 +5,7 @@
         </h2>
     </x-slot>
 
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -17,13 +18,10 @@
                             <thead class="text-xs text-gray-700 uppercase dark:text-gray-400">
                                 <tr>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                        Product name
-                                    </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Description
+                                        Product
                                     </th>
                                     <th scope="col" class="px-6 py-3 bg-gray-50 dark:bg-gray-800">
-                                        Quantity
+                                        #
                                     </th>
                                     <th scope="col" class="px-6 py-3">
                                         Price
@@ -38,9 +36,7 @@
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
                                         {{ $product->name }}
                                     </th>
-                                    <td class="px-6 py-4">
-                                        {{ $product->description }}
-                                    </td>
+                          
                                     <td class="px-6 py-4 bg-gray-50 dark:bg-gray-800">
                                         {{ $product->detail->quantity }}
                                     </td>
@@ -55,11 +51,10 @@
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
                                         Total
                                     </th>
+                                 
                                     <td class="px-6 py-4">
                                     </td>
-                                    <td class="px-6 py-4">
-                                    </td>
-                                    <td class="px-6 py-4">
+                                    <td class="font-bold  px-6 py-4">
                                         {{ $order->amount }} Rials
                                     </td>
                                 </tr>
@@ -68,18 +63,45 @@
                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
                                         Status
                                     </th>
-                                    <td class="px-6 py-4">
-                                    </td>
+                                   
                                     <td class="px-6 py-4">
                                     </td>
                                     <td class="px-6 py-4">
                                         @if ($order->payment->status)
-                                            <p class=" text-lime-700">Paid</p>
-                                        @else 
-                                        <p class=" text-red-700">Not Paid</p>
+                                        <p class="font-bold text-xl text-lime-700">Paid</p>
+                                        @else
+                                        <p class="font-bold text-xl text-red-700">Not Paid</p>
                                         @endif
                                     </td>
                                 </tr>
+
+                                @if ($order->payment->status)
+                                <tr class="border-b border-gray-200 dark:border-gray-700">
+                                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                                        Tracking Code
+                                    </th>
+                                   
+                                    <td class="px-6 py-4">
+                                    </td>
+                                    <td class=" px-6 py-4">
+                                        {{ $order->payment->tracking_code }}
+                                    </td>
+                                </tr>
+                                @endif
+
+                                @if ($order->payment->transaction_id)
+                                <tr class="border-b border-gray-200 dark:border-gray-700">
+                                    <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap bg-gray-50 dark:text-white dark:bg-gray-800">
+                                        Transaction ID
+                                    </th>
+                                  
+                                    <td class="px-6 py-4">
+                                    </td>
+                                    <td class="font-bold px-6 py-4">
+                                        {{ $order->payment->transaction_id }}
+                                    </td>
+                                </tr>
+                                @endif
 
 
                             </tbody>

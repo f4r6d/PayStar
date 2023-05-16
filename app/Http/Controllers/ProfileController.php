@@ -34,7 +34,12 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with([
+            'status'=> 'profile-updated',
+            'msg'=> 'Profile updated',
+            'title'=> 'success',
+
+        ]);
     }
 
     public function updateCardNumber(Request $request)
@@ -55,7 +60,11 @@ class ProfileController extends Controller
         $request->user()->update($request->input());
 
 
-        return back()->with('success', 'Card number updated.');
+        return back()->with([
+            'msg'=> 'Card Number updated',
+            'title'=> 'success',
+
+        ]);
     }
 
     /**
@@ -81,6 +90,7 @@ class ProfileController extends Controller
 
     public function dashboard()
     {
+        
         return view('dashboard', ['orders'=> auth()->user()->orders]);
     }
 }

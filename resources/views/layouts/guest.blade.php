@@ -17,7 +17,7 @@
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
             <div>
-                <a  href="/" class=" text-lg font-bold mix-blend-difference">
+                <a  href="/" class=" text-lg text-slate-700 dark:text-slate-200 font-bold ">
                     {{ __('Home') }}
                 </a>
             </div>

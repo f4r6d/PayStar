@@ -17,11 +17,22 @@ class PaymentController extends Controller
         try {
             $result = $this->transaction->verify();
         } catch (OrderException $e) {
-            return to_route('dashboard')->with('msg', $e->getMessage());
+            return to_route('dashboard')->with([
+                'msg' => $e->getMessage(),
+                'title' => 'Error',
+            ]);
         }
-        
-        if ($result) {
-            return to_route('dashboard')->with('msg', "ُThe order was placed, Payment successfully paid..");
+
+        if ($result['status'] == 1) {
+            return to_route('dashboard')->with([
+                'msg' => "The order {$result['payment']->order->id} was placed, Payment successfully paid..",
+                'title' => 'success',
+            ]);
+        } else {
+            return to_route('dashboard')->with([
+                'msg' => "Error in payment.....",
+                'title' => 'Error',
+            ]);
         }
     }
 }

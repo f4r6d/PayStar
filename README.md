@@ -8,5 +8,7 @@ simple project to test paystar payment api
 ## how to install
 
 git clone this repo
-fill the correct env file in env sample and 
-php artisan serve and npm run dev
+fill the correct .env file in .envexample  
+php artisan migrate
+npm run dev
+php artisan serve  

@@ -29,5 +29,10 @@
         @csrf
         <input type="submit" value="Pay" class="mt-6 w-full rounded-md bg-blue-500 py-1.5 font-medium text-blue-50 hover:bg-blue-600">
     </form>
+    <a href="{{ route('cart.index') }}">
+        <button class="mt-6 w-full rounded-md bg-cyan-500 py-1.5 font-medium text-cyan-50 hover:bg-cyan-600">Edit Cart</button>
+    </a>
     @endif
 </div>
+
+

@@ -2,6 +2,7 @@
 
 namespace App\Services\Cart;
 
+use App\Exceptions\OrderException;
 use App\Models\Product;
 use App\Services\Cart\Contracts\CartInterface;
 
@@ -17,9 +18,31 @@ class Cart
             $quantity = $this->get($product)['quantity'] + $quantity;
         }
 
+        $this->update($product, $quantity);
+    }
+
+    public function update(Product $product, int $quantity)
+    {
+        if (!$product->hasStock($quantity)) {
+            throw new OrderException("There is only {$product->stock} {$product->name} for sale..");
+        }
+
+        if(!$quantity){
+            return $this->cart->forget($product->id);
+        }
+
         $this->cart->put($product->id, [
             'quantity' => $quantity,
         ]);
+    }
+
+    public function remove(Product $product)
+    {
+        if (!$this->has($product)) {
+            throw new OrderException('Item is not in your cart..');
+        }
+        
+        $this->cart->forget($product->id);
     }
 
     public function has(Product $product)

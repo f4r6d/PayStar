@@ -14,11 +14,22 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'stock'
     ];
+
+    public function hasStock(int $quantity)
+    {
+        return $this->stock >= $quantity;
+    }
 
     public function orders() :BelongsToMany
     {
         return $this->belongsToMany(Order::class)->withPivot('quantity')->as('detail');
+    }
+
+    public function decrementStock(int $quantity)
+    {
+        $this->decrement('stock', $quantity);
     }
 
 }

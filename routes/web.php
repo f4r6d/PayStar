@@ -19,23 +19,17 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::redirect('/', 'products')->name('home');
-// Route::get('/', function(){
 
-//     $c = app(CartInterface::class);
-//     $c->put('a', 5);
-//     $c->put('b', 4);
-
-//     dd(session()->all());
-
-// });
-
-Route::resource('/products', ProductController::class)->only(['index']);
+Route::resource('products', ProductController::class)->only(['index']);
 
 Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('cart/checkout', [CartController::class, 'checkoutForm'])->name('cart.checkout-form');
 Route::post('cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
-Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 Route::get('cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::get('cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+Route::patch('cart/update/{product}', [CartController::class, 'update'])->name('cart.update');
+
 Route::post('payment/callback', [PaymentController::class, 'verify'])->name('payment.verify');
 
 

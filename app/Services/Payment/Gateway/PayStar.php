@@ -6,9 +6,7 @@ use Exception;
 use App\Exceptions\OrderException;
 use App\Models\Payment;
 use GuzzleHttp\Client;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use SoapClient;
 
 class PayStar  implements GatewayInterface
 {
@@ -18,14 +16,6 @@ class PayStar  implements GatewayInterface
         $redirect_url = config('services.paystar.baseURI') . 'payment';
         $this->redirectToBank($redirect_url, $token);
     }
-
-    private function redirectToBank(string $redirect_url, string $token)
-    {
-        echo "<form id='bank' action='{$redirect_url}' method='post'>
-        <input type='hidden' name='token' value='{$token}'>
-        </form><script>document.forms['bank'].submit()</script>";
-    }
-
 
     public function verify(Request $request)
     {
@@ -39,25 +29,25 @@ class PayStar  implements GatewayInterface
         try {
             $payment = Payment::where('ref_num', $ref_num)->firstOrFail();
         } catch (\Throwable $th) {
-            throw new OrderException('Error in payment..');
+            throw new OrderException('Error in payment...');
         }
 
         // save transaction_id into the database
         $payment->transaction_id = $request->transaction_id;
         $payment->save();
 
-        
+
         // format card number for checking if user has paid the order by his/her card number
         $card_number = $payment->card_number;
         $card_number = substr_replace($card_number, str_repeat("*", 6), 6, 6);
-        
-        
-        
+
+
+
         if ($card_number != $request->card_number) {
             throw new OrderException('You should pay the order with the given card number in profile..');
         }
-        
-        // get ready data to send verify reauest
+
+        // preparing data to send verify request
         $amount = $payment->payment_amount;
         $tracking_code = $request->tracking_code;
 
@@ -74,19 +64,24 @@ class PayStar  implements GatewayInterface
         ];
 
         // get verify response 
-        $response = $this->sendRequestVerify($data);
+        $response = $this->sendVerifyRequest($data);
 
-        // update payment database
-        if ($response->status == 1) {
-            $payment->status = 1;
-            $payment->tracking_code = $tracking_code;
-            $payment->save();
-        }
 
-        return $response;
+        return [
+            'status' => $response->status,
+            'payment' => $payment,
+            'tracking_code' => $tracking_code,
+        ];
     }
 
 
+    // Is there any better way to redirect user??????
+    private function redirectToBank(string $redirect_url, string $token)
+    {
+        echo "<form id='bank' action='{$redirect_url}' method='post'>
+        <input type='hidden' name='token' value='{$token}'>
+        </form><script>document.forms['bank'].submit()</script>";
+    }
 
     private function getToken(Payment $payment)
     {
@@ -108,7 +103,8 @@ class PayStar  implements GatewayInterface
             'card_number' => $card_number,
         ];
 
-        $response = $this->sendRequestToken($data);
+
+        $response = $this->sendTokenRequest($data);
 
         $ref_num = $response->data->ref_num;
         $payment->ref_num = $ref_num;
@@ -118,7 +114,7 @@ class PayStar  implements GatewayInterface
     }
 
 
-    private function sendRequestToken(array $data)
+    private function sendTokenRequest(array $data)
     {
         $client = new Client;
 
@@ -137,7 +133,7 @@ class PayStar  implements GatewayInterface
         return json_decode($response->getBody());
     }
 
-    private function sendRequestVerify(array $data)
+    private function sendVerifyRequest(array $data)
     {
         $client = new Client;
 

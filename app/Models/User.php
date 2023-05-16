@@ -47,6 +47,6 @@ class User extends Authenticatable
 
     public function orders() : HasMany
     {
-        return $this->hasMany(Order::class)->orderBy('created_at','desc');
+        return $this->hasMany(Order::class)->with('products', 'payment')->orderBy('created_at','desc');
     }
 }

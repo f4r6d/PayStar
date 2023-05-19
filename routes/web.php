@@ -4,6 +4,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,9 +20,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::redirect('/', 'products')->name('home');
+Route::get('/', [ProductController::class, 'home'])->name('home');
 
-Route::resource('products', ProductController::class)->only(['index']);
+Route::resource('products', ProductController::class);
+
 
 Route::get('cart', [CartController::class, 'index'])->name('cart.index');
 Route::get('cart/clear', [CartController::class, 'clear'])->name('cart.clear');
@@ -34,7 +37,6 @@ Route::post('payment/callback', [PaymentController::class, 'verify'])->name('pay
 
 
 
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -43,4 +45,25 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [ProfileController::class, 'dashboard'])->name('dashboard');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
+
+Route::prefix('storage')->group(function(){
+
+    Route::fallback(function () {
+        $filename = join('/', array_slice(request()->segments(),1));
+        $path = storage_path('app/' . $filename);
+    
+        if (!File::exists($path)) {
+            $path = storage_path('app/public/products/image/iphone-xs.png');
+        }
+    
+        $file = File::get($path);
+        $type = File::mimeType($path);
+    
+        $response = Response::make($file, 200);
+        $response->header("Content-Type", $type);
+    
+        return $response;
+    })->name('images.get');
+
+});

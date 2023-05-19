@@ -92,7 +92,7 @@ class CartController extends Controller
     public function checkoutForm()
     {
         if (!$this->cart->itemCount()) {
-            return to_route('products.index')->with([
+            return to_route('home')->with([
                 'msg' => 'Please first add items to your cart..',
                 'title' => 'Error',
             ]);

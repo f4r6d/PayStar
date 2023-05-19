@@ -1,3 +1,5 @@
+@inject('cart', 'App\Services\Cart\Cart')
+
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -8,6 +10,8 @@
                     <a href="{{ route('home') }}" class="text-lg font-bold">{{ __('Home') }}</a>
                 </div>
 
+
+
                 <!-- Navigation Links -->
                 @auth
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
@@ -15,13 +19,21 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+                @can('viewAny', App\Models\Product::class)
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
+                        {{ __('Products') }}
+                    </x-nav-link>
+                </div>
+                @endcan
                 @endauth
+
+            
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
 
-                @inject('cart', 'App\Services\Cart\Cart')
 
                 <a href="{{ route('cart.index') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Cart ({{ $cart->itemCount() }})</a>
 
@@ -29,7 +41,11 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
+                            <div>{{ Auth::user()->name }}
+                                @if (Auth::user()->admin)
+                                (admin)
+                                @endif
+                            </div>
 
                             <div class="ml-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -75,20 +91,35 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
+
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <x-responsive-nav-link :href="route('cart.index')">
+            Cart {{ $cart->itemCount() }}
+        </x-responsive-nav-link>
         @auth
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
+        @can('viewAny', App\Models\Product::class)
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('products.index')" :active="request()->routeIs('products.*')">
+                {{ __('Products') }}
+            </x-responsive-nav-link>
+        </div>
+        @endcan
         @endauth
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
             @auth
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-base text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}
+                    @if (Auth::user()->admin)
+                    (admin)
+                    @endif
+                </div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 
@@ -96,9 +127,7 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('cart.index')">
-                    Cart {{ $cart->itemCount() }}
-                </x-responsive-nav-link>
+
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
@@ -118,9 +147,7 @@
                 <x-responsive-nav-link :href="route('register')">
                     {{ __('Register') }}
                 </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('cart.index')">
-                    Cart {{ $cart->itemCount() }}
-                </x-responsive-nav-link>
+               
             </div>
             @endauth
         </div>
